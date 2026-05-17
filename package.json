@@ -1,0 +1,59 @@
+{
+  "name": "ly-pharma",
+  "version": "1.0.0",
+  "description": "Ly Pharma - Aplicación de escritorio",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev:react": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
+    "dev": "concurrently \"pnpm dev:react\" \"pnpm dev:electron\"",
+    "build": "vite build && electron-builder",
+    "build:react": "vite build"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0",
+    "vite": "^5.0.0",
+    "wait-on": "^7.2.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  },
+  "build": {
+    "appId": "com.lypharma.app",
+    "productName": "Ly Pharma",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
