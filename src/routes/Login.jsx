@@ -20,9 +20,18 @@ function Submit({pending}){
 }
 
 
-function Login(){
+function Login({onLogin}){
 
     const [pending, setPending] = useState(false);
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setPending(true);
+        setTimeout(() => {
+            setPending(false);
+            onLogin();
+        }, 1000);
+    };
     
     return(
 
@@ -37,7 +46,7 @@ function Login(){
                         <h1 className='text-2xl font-bold mb-4'>INICIAR SESIÓN</h1>
                         <p className='text-lg'>Inicie sesión para ingresar al programa</p>
                     </header>
-                    <form className='flex flex-col gap-6'>
+                    <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
                         
                         <fieldset >
                             <label htmlFor="username" className='font-semibold text-lg mb-2 block'>Usuario:</label>
