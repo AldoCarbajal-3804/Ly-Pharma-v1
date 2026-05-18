@@ -18,7 +18,6 @@ function Principal() {
     const time = date.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })
 
     const [isOpen, setOpen] = useState(false)
-    const [isActive, setActive] = useState(true)
     const [activeTab, setActiveTab] = useState("INICIO")
     
     const handleOpen = () => setOpen(!isOpen)
@@ -44,35 +43,35 @@ function Principal() {
                         icon={home}
                         text="INICIO"
                         onClick={(() => setActiveTab("INICIO"))}
-                        onActive={isActive}
+                        onActive={activeTab === "INICIO"}
                         onOpen={isOpen}
                     />
                     <ButtonNavbar 
                         icon={products}
                         text="PRODUCTOS"
                         onClick={() => setActiveTab("PRODUCTOS")}
-                        onActive={!isActive}
+                        onActive={activeTab === "PRODUCTOS"}
                         onOpen={isOpen}
                     />
                     <ButtonNavbar 
                         icon={sales}
                         text="VENTAS"
                         onClick={() => setActiveTab("VENTAS")}
-                        onActive={!isActive}
+                        onActive={activeTab === "VENTAS"}
                         onOpen={isOpen}
                     />
                     <ButtonNavbar 
                         icon={reports}
                         text="REPORTES"
                         onClick={() => setActiveTab("REPORTES")}
-                        onActive={!isActive}
+                        onActive={activeTab === "REPORTES"}
                         onOpen={isOpen}
                     />
                     <ButtonNavbar 
                         icon={config}
                         text="CONFIGURACIÓN"
                         onClick={() => setActiveTab("CONFIGURACIÓN")}
-                        onActive={!isActive}
+                        onActive={activeTab === "CONFIGURACIÓN"}
                         onOpen={isOpen}
                     />
                 </aside>
