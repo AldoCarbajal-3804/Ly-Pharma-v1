@@ -1,1 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 @import "tailwindcss";
+
+
+@theme{
+    --font-roboto: 'Roboto', sans-serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+}
+
+#login{
+    aside{
+        h1{
+            font-family: var(--font-roboto);
+        }
+        d,form{
+            font-family: var(--font-montserrat);
+            button{
+                font-family: var(--font-roboto);
+            }
+        }
+    }
+}
+
+#principal{
+
+    nav{
+        font-family: var(--font-roboto);
+    }
+
+    article{
+        header{
+            h1{
+                font-family: var(--font-roboto);
+            }
+        }
+        section{
+            font-family: var(--font-montserrat);
+        }
+    }
+}

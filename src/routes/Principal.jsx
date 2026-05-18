@@ -8,7 +8,8 @@ import reports from '../assets/icons/reports.svg'
 import config from '../assets/icons/config.svg'
 
 import { ButtonNavbar } from '../components/ButtonNavbar'
-import Inicio from '../views/Inicio'
+import Inicio from '../views/inicio/Inicio'
+import Products from '../views/products/Products'
 
 function Principal() {
 
@@ -99,6 +100,7 @@ function Principal() {
                 
                 <aside id="windows" className="p-8 overflow-y-auto bg-gray-50 flex-1">
                     {activeTab === "INICIO" && <Inicio />}
+                    {activeTab === "PRODUCTOS" && <Products />}
                 </aside>
             </article>
 

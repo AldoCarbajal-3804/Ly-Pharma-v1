@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "name": "Paracetamol 500mg",
+        "stock" : 4,
+        "badge": "CRÍTICO",
+        "badgeColor": "orange"
+    },
+    {
+        "id": 2,
+        "name": "Amoxicilina Susp.",
+        "stock": 78,
+        "badge": "VENCIMIENTO",
+        "badgeColor": "red"
+    },
+    {
+        "id": 3,
+        "name": "Insulina Glargina",
+        "stock": 12,
+        "badge": "CRÍTICO",
+        "badgeColor": "orange"
+    },
+    {
+        "id": 4,
+        "name": "Ibuprofeno 400mg",
+        "stock": 90,
+        "badge": "VENCIMIENTO",
+        "badgeColor": "red"
+    },
+    {
+        "id": 5,
+        "name": "Metformina 850mg",
+        "stock": 3,
+        "badge": "CRÍTICO",
+        "badgeColor": "orange"
+    }
+    
+]
