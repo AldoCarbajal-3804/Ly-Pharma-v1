@@ -11,6 +11,7 @@ import { ButtonNavbar } from '../components/ButtonNavbar'
 import Inicio from '../views/inicio/Inicio'
 import Products from '../views/products/Products'
 import Sales from '../views/ventas/Sales'
+import Configuracion from '../views/configuracion/Configuracion'
 
 function Principal() {
 
@@ -102,6 +103,7 @@ function Principal() {
                     {activeTab === "INICIO" && <Inicio />}
                     {activeTab === "PRODUCTOS" && <Products />}
                     {activeTab === "VENTAS" && <Sales />}
+                    {activeTab === "CONFIGURACIÓN" && <Configuracion />}
                 </aside>
             </article>
 
