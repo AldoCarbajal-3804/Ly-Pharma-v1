@@ -10,6 +10,7 @@ import config from '../assets/icons/config.svg'
 import { ButtonNavbar } from '../components/ButtonNavbar'
 import Inicio from '../views/inicio/Inicio'
 import Products from '../views/products/Products'
+import Sales from '../views/ventas/Sales'
 
 function Principal() {
 
@@ -100,6 +101,7 @@ function Principal() {
                 <aside id="windows" className="p-8 overflow-y-auto bg-gray-50 flex-1">
                     {activeTab === "INICIO" && <Inicio />}
                     {activeTab === "PRODUCTOS" && <Products />}
+                    {activeTab === "VENTAS" && <Sales />}
                 </aside>
             </article>
 

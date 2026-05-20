@@ -1,0 +1,152 @@
+[
+    {
+        "id": "#PH-2024-001",
+        "name": "Amoxicilina 500mg",
+        "category": "Antibiótico",
+        "type" : "Capsulas",
+        "stock": 15,
+        "price": "$12.50",
+        "provider": "PharmaCorp Int.",
+        "date-expire": "2027-12-31"
+    },
+    {
+        "id": "#PH-2024-042",
+        "name": "Ibuprofeno 400mg",
+        "category": "Analgésico",
+        "type" : "Tabletas",
+        "stock": 450,
+        "price": "$8.75",
+        "provider": "MedSupply Co.",
+        "date-expire": "2026-06-30"
+    },
+    {
+        "id": "#PH-2024-089",
+        "name": "Paracetamol 1g",
+        "category": "Analgésico",
+        "type" : "Tabletas",
+        "stock": 120,
+        "price": "$5.20",
+        "provider": "BioLab Solutions",
+        "date-expire": "2027-11-30"
+    },
+    {
+        "id": "#PH-2024-112",
+        "name": "Loratadina 10mg",
+        "category": "Antihistamínico",
+        "type" : "Tabletas",
+        "stock": 89,
+        "price": "$15.40",
+        "provider": "PharmaCorp Int.",
+        "date-expire": "2026-05-30"
+    },
+    {
+        "id": "#PH-2024-205",
+        "name": "Omeprazol 20mg",
+        "category": "Gastrointestinal",
+        "type" : "Cápsulas",
+        "stock": 35,
+        "price": "$18.90",
+        "provider": "MedSupply Co.",
+        "date-expire": "2027-08-31"
+    },
+    {
+        "id": "#PH-2024-156",
+        "name": "Metformina 850mg",
+        "category": "Antidiabético",
+        "type" : "Tabletas",
+        "stock": 200,
+        "price": "$9.30",
+        "provider": "BioLab Solutions",
+        "date-expire": "2026-09-15"
+    },
+    {
+        "id": "#PH-2024-178",
+        "name": "Losartán 50mg",
+        "category": "Cardiovascular",
+        "type" : "Tabletas",
+        "stock": 78,
+        "price": "$11.60",
+        "provider": "PharmaCorp Int.",
+        "date-expire": "2027-03-22"
+    },
+    {
+        "id": "#PH-2024-201",
+        "name": "Salbutamol Inhalador",
+        "category": "Respiratorio",
+        "type" : "Inhalador",
+        "stock": 42,
+        "price": "$22.00",
+        "provider": "MedSupply Co.",
+        "date-expire": "2025-08-10"
+    },
+    {
+        "id": "#PH-2024-223",
+        "name": "Diazepam 10mg",
+        "category": "Neurológico",
+        "type" : "Tabletas",
+        "stock": 5,
+        "price": "$16.80",
+        "provider": "BioLab Solutions",
+        "date-expire": "2026-12-01"
+    },
+    {
+        "id": "#PH-2024-245",
+        "name": "Hidrocortisona Crema",
+        "category": "Dermatológico",
+        "type" : "Crema",
+        "stock": 67,
+        "price": "$13.40",
+        "provider": "PharmaCorp Int.",
+        "date-expire": "2027-07-19"
+    },
+    {
+        "id": "#PH-2024-267",
+        "name": "Azitromicina 500mg",
+        "category": "Antibiótico",
+        "type" : "Tabletas",
+        "stock": 110,
+        "price": "$19.90",
+        "provider": "GlobalHealth Ltd.",
+        "date-expire": "2026-04-28"
+    },
+    {
+        "id": "#PH-2024-289",
+        "name": "Clorfenamina 4mg",
+        "category": "Antihistamínico",
+        "type" : "Tabletas",
+        "stock": 340,
+        "price": "$3.50",
+        "provider": "MedSupply Co.",
+        "date-expire": "2027-10-05"
+    },
+    {
+        "id": "#PH-2024-301",
+        "name": "Bismuto Subsalicilato",
+        "category": "Gastrointestinal",
+        "type" : "Tabletas",
+        "stock": 0,
+        "price": "$7.20",
+        "provider": "GlobalHealth Ltd.",
+        "date-expire": "2026-02-14"
+    },
+    {
+        "id": "#PH-2024-323",
+        "name": "Vitamina D3 2000UI",
+        "category": "Suplemento",
+        "type" : "Cápsulas",
+        "stock": 185,
+        "price": "$14.50",
+        "provider": "BioLab Solutions",
+        "date-expire": "2028-01-30"
+    },
+    {
+        "id": "#PH-2024-345",
+        "name": "Naproxeno 550mg",
+        "category": "Analgésico",
+        "type" : "Tabletas",
+        "stock": 92,
+        "price": "$10.75",
+        "provider": "GlobalHealth Ltd.",
+        "date-expire": "2026-11-20"
+    }
+]
