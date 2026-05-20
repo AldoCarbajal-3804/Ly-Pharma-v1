@@ -19,7 +19,7 @@ function Products() {
 
             <SearchProducts />
             <FilterProducts />
-
+            <br />
             <ProductTable products={currentProducts} />
 
             <Pagination
