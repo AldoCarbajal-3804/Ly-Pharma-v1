@@ -14,7 +14,7 @@ export async function login(username, password) {
 }
 
 export async function logout(token) {
-    const res = await fetch(API_URL,{
+    const res = await fetch(`${URL}/auth/logout`,{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' , 'Authorization' : `Bearer ${token}` },
     })
