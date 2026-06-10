@@ -1,4 +1,4 @@
-export const StatCard = ({ title, value, badge, badgeType, icon: IconColor }) => {
+export const StatCard = ({ title, value, badge, badgeType, icon: IconColor, iconSvg }) => {
     const badgeStyles = {
         success: "bg-green-100 text-green-700",
         warning: "bg-orange-100 text-orange-700",
@@ -10,8 +10,9 @@ export const StatCard = ({ title, value, badge, badgeType, icon: IconColor }) =>
         <blockquote className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex-1 min-w-50">
             <section className="flex justify-between items-start mb-4">
                 <div className={`p-2 rounded-lg ${IconColor} bg-opacity-10`}>
-                    <div className={`w-5 h-5 rounded ${IconColor.replace('text-', 'bg-')}`} />
+                    <img src={iconSvg} alt="Icon" />
                 </div>
+                
                 {badge && (
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${badgeStyles[badgeType]}`}>
                         {badge}

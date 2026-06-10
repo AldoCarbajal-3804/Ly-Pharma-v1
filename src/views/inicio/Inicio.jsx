@@ -1,23 +1,44 @@
 import { StatCard } from "./StatCard.jsx"
 import {AlertsProducts} from "./AlertProducts.jsx"
 import transactions from "../../data/transaction.json"
-import stats from "../../data/stats.json"
 import alerts from "../../data/alerts-products.json"
+import sales from "../../assets/icons/inicio/sales.svg"
+import low_stock from "../../assets/icons/inicio/low_stock.svg"
+import defeat_product from "../../assets/icons/inicio/defeat_product.svg"
+import ganances from "../../assets/icons/inicio/ganances.svg"
 
 function Inicio(){
     return(
         <>
             <div className="flex flex-wrap gap-6 mb-10">
-                {stats.map((stat, i) => (
-                    <StatCard 
-                        key={i}
-                        title={stat.title}
-                        value={stat.value}
-                        badge={stat.badge}
-                        badgeType={stat.badgeType}
-                        icon={stat.icon}
-                    />
-                ))}
+                <StatCard 
+                    title="Ventas del Día"
+                    value="$4,280.50"
+                    badge="↗ 12.5%"
+                    badgeType="success"
+                    iconSvg={sales}
+                />
+                <StatCard 
+                    title="Productos con Bajo Stock"
+                    value="14 items"
+                    badge="Revisar"
+                    badgeType="warning"
+                    iconSvg={low_stock}
+                />
+                <StatCard 
+                    title="Productos a Expirar"
+                    value="5 items"
+                    badge="Crítico"
+                    badgeType="danger"
+                    iconSvg={defeat_product}
+                />
+                <StatCard 
+                    title="Ganancia Diaria"
+                    value="$1,124.20"
+                    badge="Ganancia Neta"
+                    badgeType="info"
+                    iconSvg={ganances}
+                />
             </div>
 
             <article className="flex gap-4">
