@@ -16,8 +16,7 @@ export async function login(username, password) {
 export async function logout(token) {
     const res = await fetch(API_URL,{
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({token})
+        headers: { 'Content-Type': 'application/json' , 'Authorization' : `Bearer ${token}` },
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || 'Error en cerrar sesión');
