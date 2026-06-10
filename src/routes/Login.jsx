@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import banner from '../assets/banner.webp';
+
 
 function Submit({pending}){
     return (
@@ -20,19 +23,27 @@ function Submit({pending}){
 }
 
 
-function Login({onLogin}){
+function Login(){
 
+    const navigate = useNavigate();
+    const { login } = useAuth();
     const [pending, setPending] = useState(false);
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setPending(true);
-        setTimeout(() => {
+
+        try {
+            await login(e.target.username.value, e.target.password.value);
+            navigate('/principal');
+        } catch (error) {
+            alert(error.message);
+        } finally {
             setPending(false);
-            onLogin();
-        }, 1000);
+        }
     };
     
+
     return(
 
         <main id="login" className='flex justify-center items-center min-h-screen'>

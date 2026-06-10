@@ -6,14 +6,19 @@ import products from '../assets/icons/products.svg'
 import sales from '../assets/icons/sales.svg'
 import reports from '../assets/icons/reports.svg'
 import config from '../assets/icons/config.svg'
+import exit from '../assets/icons/exit.svg'
 
 import { ButtonNavbar } from '../components/ButtonNavbar'
 import Inicio from '../views/inicio/Inicio'
 import Products from '../views/products/Products'
 import Sales from '../views/ventas/Sales'
 import Configuracion from '../views/configuracion/Configuracion'
+import {useNavigate} from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 
 function Principal() {
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
 
     const date = new Date()
     const today = date.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
@@ -76,6 +81,13 @@ function Principal() {
                         onActive={activeTab === "CONFIGURACIÓN"}
                         onOpen={isOpen}
                     />
+                    <ButtonNavbar 
+                        icon={exit}
+                        text="SALIR"
+                        onClick={async () => { await logout(); navigate('/'); }}
+                        onActive={activeTab === "SALIR"}
+                        onOpen={isOpen}
+                    />
                 </aside>
             </nav>
 
@@ -96,6 +108,9 @@ function Principal() {
                     </section>
 
                     <section className="flex items-center gap-4">
+                        <span className="text-emerald-700 font-bold text-lg">
+                            {user?.nombres} {user?.apellidos}
+                        </span>
                     </section>
                 </header>
                 
@@ -104,6 +119,7 @@ function Principal() {
                     {activeTab === "PRODUCTOS" && <Products />}
                     {activeTab === "VENTAS" && <Sales />}
                     {activeTab === "CONFIGURACIÓN" && <Configuracion />}
+                    {activeTab === "SALIR" && <Salir />}
                 </aside>
             </article>
 
