@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react'
 import { StatCard } from "./StatCard.jsx"
 import {AlertsProducts} from "./AlertProducts.jsx"
+import { useAuth } from '../../hooks/useAuth'
+import { getMuestra } from '../../services/muestraService'
 import transactions from "../../data/transaction.json"
 import alerts from "../../data/alerts-products.json"
 import sales from "../../assets/icons/inicio/sales.svg"
@@ -8,33 +11,50 @@ import defeat_product from "../../assets/icons/inicio/defeat_product.svg"
 import ganances from "../../assets/icons/inicio/ganances.svg"
 
 function Inicio(){
+    const { user } = useAuth()
+    const [stats, setStats] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!user?.token) return
+        getMuestra(user.token)
+            .then(data => {
+                setStats(data)
+                setLoading(false)
+            })
+            .catch(err => {
+                console.error(err)
+                setLoading(false)
+            })
+    }, [user?.token])
+
     return(
         <>
             <div className="flex flex-wrap gap-6 mb-10">
                 <StatCard 
                     title="Ventas del Día"
-                    value="$4,280.50"
+                    value={loading ? "..." : `$${stats?.total_ventas_dia?.toFixed(2) ?? '0.00'}`}
                     badge="↗ 12.5%"
                     badgeType="success"
                     iconSvg={sales}
                 />
                 <StatCard 
                     title="Productos con Bajo Stock"
-                    value="14 items"
+                    value={loading ? "..." : `${stats?.stock_bajo ?? 0} items`}
                     badge="Revisar"
                     badgeType="warning"
                     iconSvg={low_stock}
                 />
                 <StatCard 
                     title="Productos a Expirar"
-                    value="5 items"
+                    value={loading ? "..." : `${stats?.productos_por_vencer ?? 0} items`}
                     badge="Crítico"
                     badgeType="danger"
                     iconSvg={defeat_product}
                 />
                 <StatCard 
                     title="Ganancia Diaria"
-                    value="$1,124.20"
+                    value={loading ? "..." : `$${stats?.ganancia_diaria?.toFixed(2) ?? '0.00'}`}
                     badge="Ganancia Neta"
                     badgeType="info"
                     iconSvg={ganances}
