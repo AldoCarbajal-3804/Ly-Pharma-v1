@@ -1,4 +1,6 @@
 export const ProductTable = ({ products }) => {
+    const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
+
     const getDaysUntilExpire = (dateStr) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -9,8 +11,7 @@ export const ProductTable = ({ products }) => {
 
     const getRowStyle = (product) => {
         const days = getDaysUntilExpire(product["date-expire"]);
-        if (days <= 5) return "bg-red-50 border-b border-red-100";
-        if (days <= 10) return "bg-orange-50 border-b border-orange-100";
+        if (days <= 40) return "bg-red-50 border-b border-red-100";
         return "border-b border-gray-50";
     };
 
@@ -25,30 +26,27 @@ export const ProductTable = ({ products }) => {
             <table className="w-full text-sm">
                 <thead>
                     <tr className="border-b border-gray-100">
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Nombre</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Categoría</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Stock</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Precio</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Proveedor</th>
-                        <th className="text-left py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Vence</th>
-                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Acciones</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Nombre</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Categoría</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Stock</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Vencimiento</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Proveedores</th>
                     </tr>
                 </thead>
                 <tbody>
                     {products.map((product) => (
                         <tr key={product.id} className={`${getRowStyle(product)} hover:bg-opacity-70 transition-colors`}>
-                            <td className="py-3 px-2 font-medium text-gray-800">{product.name}</td>
-                            <td className="py-3 px-2 text-gray-600">{product.category}</td>
-                            <td className="py-3 px-2 text-gray-600">{product.type}</td>
-                            <td className="py-3 px-2">
+                            <td className="py-3 px-2 font-medium text-gray-800 text-center">{product.name}</td>
+                            <td className="py-3 px-2 text-gray-600 text-center">{capitalize(product.category)}</td>
+                            <td className="py-3 px-2 text-gray-600 text-center">{capitalize(product.type)}</td>
+                            <td className="py-3 px-2 text-center">
                                 <span className={`font-semibold ${getStockColor(product.stock)}`}>
                                     {product.stock}
                                 </span>
                             </td>
-                            <td className="py-3 px-2 text-gray-800 font-semibold">{product.price}</td>
-                            <td className="py-3 px-2 text-gray-600">{product.provider}</td>
-                            <td className="py-3 px-2 text-gray-600 text-xs">{product["date-expire"]}</td>
+                            <td className="py-3 px-2 text-gray-600 text-center">{product.provider}</td>
+                            <td className="py-3 px-2 text-gray-600 text-xs text-center">{product["date-expire"]?.split('T')[0]}</td>
                             <td className="py-3 px-2">
                                 <div className="flex items-center justify-center gap-2">
                                     <button className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors cursor-pointer" title="Editar">

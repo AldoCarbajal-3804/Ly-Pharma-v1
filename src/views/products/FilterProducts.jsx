@@ -1,83 +1,103 @@
-export const FilterProducts = () => {
+import { useState, useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { getCategoria, getTipos } from "../../services/categoriaServices";
+
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+export const FilterProducts = ({ filters, onFilterChange, onClear }) => {
+    const { user } = useAuth();
+    const [categorias, setCategorias] = useState([]);
+    const [tipos, setTipos] = useState([]);
+
+    useEffect(() => {
+        if (!user?.token) return;
+        Promise.all([
+            getCategoria(user.token),
+            getTipos(user.token),
+        ])
+            .then(([cats, tips]) => {
+                setCategorias(cats);
+                setTipos(tips);
+            })
+            .catch(console.error);
+    }, [user?.token]);
+
     return (
         <section className="mb-5">
             <h3 className="text-sm font-bold text-gray-800 mb-3">Filtros</h3>
 
-            <main className="flex gap-4 items-end">
-                <div className="flex-3 flex gap-4">
-                    <group className="flex-1">
-                        <label className="mb-1 block text-xs font-medium text-gray-600">Categoría</label>
-                        <select className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm">
-                            <option value="">Todas las categorías</option>
-                            <option value="Antibiótico">Antibiótico</option>
-                            <option value="Analgésico">Analgésico</option>
-                            <option value="Antihistamínico">Antihistamínico</option>
-                            <option value="Gastrointestinal">Gastrointestinal</option>
-                            <option value="Antidiabético">Antidiabético</option>
-                            <option value="Cardiovascular">Cardiovascular</option>
-                            <option value="Respiratorio">Respiratorio</option>
-                            <option value="Neurológico">Neurológico</option>
-                            <option value="Dermatológico">Dermatológico</option>
-                            <option value="Suplemento">Suplemento</option>
-                        </select>
-                    </group>
+            <div className="flex gap-4 items-end">
+                <fieldset className="border border-gray-200 rounded-xl p-4 flex-1">
+                    <legend className="text-xs font-semibold text-gray-500 px-1">Filtrar</legend>
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <label className="mb-1 block text-xs font-medium text-gray-600">Categoría</label>
+                            <select
+                                className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm"
+                                value={filters.categoria}
+                                onChange={(e) => onFilterChange("categoria", e.target.value)}
+                            >
+                                <option value="">Todas las categorías</option>
+                                {categorias.map((c) => (
+                                    <option key={c.nombre} value={c.nombre}>{capitalize(c.nombre)}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <group className="flex-1">
-                        <label className="mb-1 block text-xs font-medium text-gray-600">Tipo</label>
-                        <select className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm">
-                            <option value="">Todos los tipos</option>
-                            <option value="Tabletas">Tabletas</option>
-                            <option value="Capsulas">Capsulas</option>
-                            <option value="Cápsulas">Cápsulas</option>
-                            <option value="Inhalador">Inhalador</option>
-                            <option value="Crema">Crema</option>
-                        </select>
-                    </group>
+                        <div className="flex-1">
+                            <label className="mb-1 block text-xs font-medium text-gray-600">Tipo</label>
+                            <select
+                                className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm"
+                                value={filters.tipo}
+                                onChange={(e) => onFilterChange("tipo", e.target.value)}
+                            >
+                                <option value="">Todos los tipos</option>
+                                {tipos.map((t) => (
+                                    <option key={t.nombre} value={t.nombre}>{capitalize(t.nombre)}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
 
-                    <group className="flex-1">
-                        <label className="mb-1 block text-xs font-medium text-gray-600">Proveedor</label>
-                        <select className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm">
-                            <option value="">Todos los proveedores</option>
-                            <option value="PharmaCorp Int.">PharmaCorp Int.</option>
-                            <option value="MedSupply Co.">MedSupply Co.</option>
-                            <option value="BioLab Solutions">BioLab Solutions</option>
-                            <option value="GlobalHealth Ltd.">GlobalHealth Ltd.</option>
-                        </select>
-                    </group>
-                </div>
+                <fieldset className="border border-gray-200 rounded-xl p-4 flex-1">
+                    <legend className="text-xs font-semibold text-gray-500 px-1">Ordenar</legend>
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <label className="mb-1 block text-xs font-medium text-gray-600">Stock</label>
+                            <select
+                                className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm"
+                                value={filters.stock}
+                                onChange={(e) => onFilterChange("stock", e.target.value)}
+                            >
+                                <option value="">Sin orden</option>
+                                <option value="desc">Mayor stock</option>
+                                <option value="asc">Menor stock</option>
+                            </select>
+                        </div>
 
-                <div className="h-px bg-transparent w-8 self-stretch" />
+                        <div className="flex-1">
+                            <label className="mb-1 block text-xs font-medium text-gray-600">Vencimiento</label>
+                            <select
+                                className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm"
+                                value={filters.vencimiento}
+                                onChange={(e) => onFilterChange("vencimiento", e.target.value)}
+                            >
+                                <option value="">Sin orden</option>
+                                <option value="asc">Más próximos</option>
+                                <option value="desc">Más lejanos</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
 
-                <div className="flex-[1.5] flex gap-4">
-                    <group className="flex-1">
-                        <label className="mb-1 block text-xs font-medium text-gray-600">Costo</label>
-                        <select className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm">
-                            <option value="">Sin orden</option>
-                            <option value="desc">Mayor costo</option>
-                            <option value="asc">Menor costo</option>
-                        </select>
-                    </group>
-
-                    <group className="flex-1">
-                        <label className="mb-1 block text-xs font-medium text-gray-600">Vencimiento</label>
-                        <select className="w-full rounded-xl bg-gray-100 py-2.5 px-3 outline-none text-gray-800 text-sm">
-                            <option value="">Sin orden</option>
-                            <option value="asc">Más recientes</option>
-                            <option value="desc">Más lejanos</option>
-                        </select>
-                    </group>
-                </div>
-
-                <div className="h-px bg-transparent w-8 self-stretch" />
-
-                <div className="flex-1 flex items-end">
-                    <button className="w-full px-4 py-2.5 text-sm font-medium text-white bg-green-800 rounded-xl hover:bg-green-700 transition-colors cursor-pointer">
-                        Limpiar filtros
-                    </button>
-                </div>
-            </main>
-
-            
+                <button
+                    className="px-5 py-2.5 text-sm font-medium text-white bg-green-800 rounded-xl hover:bg-green-700 transition-colors cursor-pointer h-[42px]"
+                    onClick={onClear}
+                >
+                    Limpiar filtros
+                </button>
+            </div>
         </section>
     );
 };
