@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
 import { StatCard } from "./StatCard.jsx"
 import {AlertsProducts} from "./AlertProducts.jsx"
 import { useAuth } from '../../hooks/useAuth'
-import { getMuestra } from '../../services/muestraService'
+import { useMuestraCache } from '../../cache/useMuestraCache'
+import { useAlertsCache } from '../../cache/useAlertsCache'
 import transactions from "../../data/transaction.json"
-import alerts from "../../data/alerts-products.json"
 import sales from "../../assets/icons/inicio/sales.svg"
 import low_stock from "../../assets/icons/inicio/low_stock.svg"
 import defeat_product from "../../assets/icons/inicio/defeat_product.svg"
@@ -12,21 +11,8 @@ import ganances from "../../assets/icons/inicio/ganances.svg"
 
 function Inicio(){
     const { user } = useAuth()
-    const [stats, setStats] = useState(null)
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        if (!user?.token) return
-        getMuestra(user.token)
-            .then(data => {
-                setStats(data)
-                setLoading(false)
-            })
-            .catch(err => {
-                console.error(err)
-                setLoading(false)
-            })
-    }, [user?.token])
+    const { data: stats, isLoading: loading } = useMuestraCache()
+    const { data: alerts = [] } = useAlertsCache()
 
     return(
         <>
@@ -95,14 +81,18 @@ function Inicio(){
                         <h3 className="font-bold text-gray-800 text-lg">Alertas de Productos</h3>
                     </header>
                     <div className="p-6 flex flex-col gap-4">
-                        {alerts.map((alert, i) => (
+                        {loading ? (
+                            <p className="text-center text-gray-500 py-4">Cargando alertas...</p>
+                        ) : alerts.length === 0 ? (
+                            <p className="text-center text-gray-500 py-4">Sin alertas</p>
+                        ) : alerts.map((alert, i) => (
                             <AlertsProducts
                                 key={i}
                                 name={alert.name}
                                 stock={alert.stock}
                                 badge={alert.badge}
                                 badgeColor={alert.badgeColor}
-                            />      
+                            />
                         ))}
                     </div>
                 </div>
