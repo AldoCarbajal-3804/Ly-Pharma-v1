@@ -91,7 +91,7 @@ function Principal() {
                 </aside>
             </nav>
 
-            <article className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <article className="flex-1 flex flex-col min-w-0 overflow-clip">
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 transition-all">
                     <section className="flex items-center gap-4 text-gray-600">
                         <date className="flex flex-col">
