@@ -20,3 +20,44 @@ export async function getProductos(token, { limit = 10, offset = 1, categoria, t
     if (!res.ok) throw new Error(data.message || 'Error en el envio de token');
     return data;
 }
+
+export async function addProduct(token, product) {
+    const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(product)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error al crear producto');
+    return data;
+}
+
+export async function editProduct(token, product, id) {
+    const res = await fetch(`${API_URL}${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(product)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error al editar producto');
+    return data;
+}
+
+export async function deleteProduct(token, id) {
+    const res = await fetch(`${API_URL}${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error al eliminar producto');
+    return data;
+}

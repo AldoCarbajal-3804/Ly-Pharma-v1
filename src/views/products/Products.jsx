@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/useAuth";
-import { getProductos } from "../../services/productService";
+import { getProductos, deleteProduct } from "../../services/productService";
 import { FilterProducts } from "./FilterProducts";
+import { AddProduct } from "./AddProduct";
 import { ProductTable } from "./ProductTable";
 import { Pagination } from "./Pagination";
 
@@ -10,8 +11,11 @@ const ITEMS_PER_PAGE = 10;
 
 function Products() {
     const { user } = useAuth();
+    const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState({ categoria: "", tipo: "", stock: "", vencimiento: "" });
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
 
     const handleFilterChange = useCallback((key, value) => {
         setFilters((prev) => ({ ...prev, [key]: value }));
@@ -27,7 +31,7 @@ function Products() {
         queryKey: ["productos", filters, currentPage],
         queryFn: () => getProductos(user.token, {
             limit: ITEMS_PER_PAGE,
-            offset: currentPage,
+            offset: (currentPage - 1) * ITEMS_PER_PAGE,
             categoria: filters.categoria || undefined,
             tipo: filters.tipo || undefined,
             stock: filters.stock || undefined,
@@ -46,23 +50,63 @@ function Products() {
                 provider: p.proveedor,
                 "date-expire": p.fecha_vencimiento,
             })),
-            totalPages: Math.ceil(res.total / ITEMS_PER_PAGE),
+            total: res.total,
         }),
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: (id) => deleteProduct(user.token, id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["productos"] });
+        },
+    });
+
+    const handleEdit = useCallback((product) => {
+        setEditingProduct(product);
+    }, []);
+
+    const handleDelete = useCallback((product) => {
+        if (window.confirm(`¿Eliminar "${product.name}"? Esta acción no se puede deshacer.`)) {
+            deleteMutation.mutate(product.id);
+        }
+    }, [deleteMutation]);
+
+    const total = data?.total ?? 0;
+    const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
     return (
-        <main className="w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <section className="w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-gray-800">Productos</h2>
+                <button
+                    onClick={() => setShowAddModal(true)}
+                    className="px-4 py-2 text-sm font-semibold text-white bg-green-800 rounded-xl hover:bg-green-700 transition-colors cursor-pointer"
+                >
+                    + Nuevo producto
+                </button>
+            </div>
+
+            {showAddModal && <AddProduct onClose={() => setShowAddModal(false)} />}
+            {editingProduct && <AddProduct product={editingProduct} onClose={() => setEditingProduct(null)} />}
+
+            {deleteMutation.isError && (
+                <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 rounded-xl border border-red-200">
+                    {deleteMutation.error.message}
+                </div>
+            )}
 
             <FilterProducts filters={filters} onFilterChange={handleFilterChange} onClear={handleClear} />
-            <br />
-            <ProductTable products={data?.products ?? []} />
+            <ProductTable products={data?.products ?? []} onEdit={handleEdit} onDelete={handleDelete} />
 
             <Pagination
                 currentPage={currentPage}
-                totalPages={data?.totalPages ?? 0}
+                totalPages={totalPages}
+                total={total}
+                itemsPerPage={ITEMS_PER_PAGE}
                 onPageChange={setCurrentPage}
             />
-        </main>
+        </section>
     );
 
 }

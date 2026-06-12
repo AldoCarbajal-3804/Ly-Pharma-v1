@@ -1,7 +1,7 @@
 import edit from "../../assets/icons/productos/edit.svg"
 import trash from "../../assets/icons/productos/trash.svg"
 
-export const ProductTable = ({ products }) => {
+export const ProductTable = ({ products, onEdit, onDelete }) => {
     const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
 
     const getDaysUntilExpire = (dateStr) => {
@@ -52,10 +52,10 @@ export const ProductTable = ({ products }) => {
                             <td className="py-3 px-2 text-gray-600 text-xs text-center">{product["date-expire"]?.split('T')[0]}</td>
                             <td className="py-3 px-2">
                                 <div className="flex items-center justify-center gap-2">
-                                    <button className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors cursor-pointer" title="Editar">
+                                    <button className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors cursor-pointer" title="Editar" onClick={() => onEdit(product)}>
                                         <img src={edit} alt="Editar" />
                                     </button>
-                                    <button className="p-1.5 rounded-lg hover:bg-red-100 text-red-500 transition-colors cursor-pointer" title="Eliminar">
+                                    <button className="p-1.5 rounded-lg hover:bg-red-100 text-red-500 transition-colors cursor-pointer" title="Eliminar" onClick={() => onDelete(product)}>
                                         <img src={trash} alt="Eliminar" />
                                     </button>
                                 </div>
