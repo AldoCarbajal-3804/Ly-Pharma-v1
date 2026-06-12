@@ -1,13 +1,11 @@
-import { useRef, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query"
 
-export function usePageCache() {
-    const cache = useRef(new Map());
-
-    const get = useCallback((page) => cache.current.get(page), []);
-
-    const set = useCallback((page, data) => cache.current.set(page, data), []);
-
-    const has = useCallback((page) => cache.current.has(page), []);
-
-    return { get, set, has };
+export function usePageCache(queryKey, queryFn, options = {}) {
+    return useQuery({
+        queryKey,
+        queryFn,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        ...options,
+    })
 }
