@@ -20,7 +20,22 @@ export function AuthProvider({ children }) {
             if (token) logoutBeacon(token);
         };
         window.addEventListener('beforeunload', handleUnload);
-        return () => window.removeEventListener('beforeunload', handleUnload);
+
+        const handleForceLogout = () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                logoutBeacon(token);
+                setTimeout(() => window.electronAPI?.logoutDone(), 2000);
+            } else {
+                window.electronAPI?.logoutDone();
+            }
+        };
+        const cleanupIpc = window.electronAPI?.onForceLogout(handleForceLogout);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+            cleanupIpc?.();
+        };
     }, []);
 
     const login = async (username, password) => {

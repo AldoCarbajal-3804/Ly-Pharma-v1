@@ -1,7 +1,8 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
 let mainWindow;
+let forceQuit = false;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -12,6 +13,18 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
+  });
+
+  mainWindow.on('close', (e) => {
+    if (!forceQuit) {
+      e.preventDefault();
+      mainWindow.webContents.send('force-logout');
+    }
+  });
+
+  ipcMain.on('logout-done', () => {
+    forceQuit = true;
+    mainWindow.close();
   });
 
   if (process.env.NODE_ENV === 'development') {
