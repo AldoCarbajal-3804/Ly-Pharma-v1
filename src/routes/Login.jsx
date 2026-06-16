@@ -28,19 +28,23 @@ function Login(){
     const navigate = useNavigate();
     const { login } = useAuth();
     const [pending, setPending] = useState(false);
+    const [error, setError] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
         setPending(true);
 
         try {
-            await login(e.target.username.value, e.target.password.value);
+            await login(username, password);
             navigate('/principal');
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            setPending(false);
+        } catch (err) {
+            setError(err.message);
         }
+
+        setPending(false);
     };
     
 
@@ -59,13 +63,15 @@ function Login(){
                     </header>
                     <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
                         
-                        <fieldset >
+                        <fieldset>
                             <label htmlFor="username" className='font-semibold text-lg mb-2 block'>Usuario:</label>
                             <input 
                                 placeholder="Ingrese su usuario" 
                                 type="text" 
                                 id="username" 
-                                name="username" 
+                                name="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className='bg-white border text-base border-gray-300 rounded-md py-2 px-4 w-full focus:outline-none focus:none'    
                             />
                         </fieldset>
@@ -76,11 +82,16 @@ function Login(){
                                 placeholder="Ingrese su contraseña" 
                                 type="password" 
                                 id="password" 
-                                name="password" 
+                                name="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className='bg-white border text-base border-gray-300 rounded-md py-2 px-4 w-full focus:outline-none focus:none'
                             />
                         </fieldset>
                         <span className='py-0.5'></span>
+                        {error && (
+                            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">{error}</p>
+                        )}
                         <div className='flex justify-between items-center'>
                             <fieldset>
                                 <label htmlFor="remember" className='text-sm'>

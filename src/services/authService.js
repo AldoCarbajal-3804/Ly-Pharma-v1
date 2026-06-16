@@ -22,3 +22,11 @@ export async function logout(token) {
     if (!res.ok) throw new Error(data.message || 'Error en cerrar sesión');
     return data;
 }
+
+export function logoutBeacon(token) {
+    fetch(`${URL}/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        keepalive: true,
+    }).catch(() => {});
+}
