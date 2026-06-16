@@ -1,19 +1,34 @@
-import { useState } from "react";
-import ventas from "../../data/ventas.json";
-import { SalesTable } from "./SalesTable";
-import { Pagination } from "./Pagination";
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useAuth } from "../../hooks/useAuth"
+import { getVentas } from "../../services/ventaService"
+import { SalesTable } from "./SalesTable"
+import { Pagination } from "./Pagination"
+import { AddSale } from "./AddSale"
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 6
 
 function Sales() {
-    const [currentPage, setCurrentPage] = useState(1);
+    const { user } = useAuth()
+    const [currentPage, setCurrentPage] = useState(1)
+    const [showAddModal, setShowAddModal] = useState(false)
 
-    const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentSales = ventas.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const { data: ventas = [] } = useQuery({
+        queryKey: ["ventas"],
+        queryFn: () => getVentas(user.token),
+        enabled: !!user?.token,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        select: (res) => res.data ?? res ?? [],
+    })
+
+    const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE)
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const currentSales = ventas.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
     return (
         <main className="w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
+            {showAddModal && <AddSale onClose={() => setShowAddModal(false)} />}
 
             <section aria-label="Resumen de ventas" className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <article className="bg-white p-5 rounded-xl border border-gray-100">
@@ -23,7 +38,7 @@ function Sales() {
                     </header>
                     <div>
                         <p className="text-sm font-medium text-gray-500">Ingresos por Productos</p>
-                        <h2 className="mt-2 text-3xl font-bold text-gray-800">$12,450.00</h2>
+                        <h2 className="mt-2 text-3xl font-bold text-gray-800">S/12,450.00</h2>
                     </div>
                 </article>
 
@@ -47,10 +62,13 @@ function Sales() {
                     </div>
 
                     <nav aria-label="Acciones de ventas" className="flex flex-wrap gap-3">
-                        <button className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors">
+                        <button className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer">
                             Exportar
                         </button>
-                        <button className="rounded-xl bg-green-800 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors">
+                        <button
+                            onClick={() => setShowAddModal(true)}
+                            className="rounded-xl bg-green-800 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors cursor-pointer"
+                        >
                             Nueva Venta
                         </button>
                     </nav>
@@ -67,7 +85,7 @@ function Sales() {
                 />
             </section>
         </main>
-    );
+    )
 }
 
-export default Sales;
+export default Sales
