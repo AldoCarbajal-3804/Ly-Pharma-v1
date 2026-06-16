@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-import { login as loginApi, logout as logoutApi } from '../services/authService';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { login as loginApi, logout as logoutApi, logoutBeacon } from '../services/authService';
 import { getProfile } from '../services/perfilService';
 
 const AuthContext = createContext(null);
@@ -13,6 +13,15 @@ export function AuthProvider({ children }) {
         }
         return token ? { token } : null;
     });
+
+    useEffect(() => {
+        const handleUnload = () => {
+            const token = localStorage.getItem('token');
+            if (token) logoutBeacon(token);
+        };
+        window.addEventListener('beforeunload', handleUnload);
+        return () => window.removeEventListener('beforeunload', handleUnload);
+    }, []);
 
     const login = async (username, password) => {
         const data = await loginApi(username, password);
