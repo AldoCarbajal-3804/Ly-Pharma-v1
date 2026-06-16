@@ -1,26 +1,16 @@
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../hooks/useAuth"
-import { getVentas } from "../../services/ventaService"
 import { SalesTable } from "./SalesTable"
 import { Pagination } from "./Pagination"
 import { AddSale } from "./AddSale"
+import { useVentasCache } from "../../cache/useVentasCache"
 
 const ITEMS_PER_PAGE = 6
 
 function Sales() {
-    const { user } = useAuth()
     const [currentPage, setCurrentPage] = useState(1)
     const [showAddModal, setShowAddModal] = useState(false)
 
-    const { data: ventas = [] } = useQuery({
-        queryKey: ["ventas"],
-        queryFn: () => getVentas(user.token),
-        enabled: !!user?.token,
-        staleTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: false,
-        select: (res) => res.data ?? res ?? [],
-    })
+    const { data: ventas = [] } = useVentasCache()
 
     const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE)
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
