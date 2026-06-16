@@ -19,7 +19,7 @@ function Inicio(){
             <div className="flex flex-wrap gap-6 mb-10">
                 <StatCard 
                     title="Ventas del Día"
-                    value={loading ? "..." : `$${stats?.total_ventas_dia?.toFixed(2) ?? '0.00'}`}
+                    value={loading ? "..." : `${stats?.unidades_vendidas ?? stats?.total_ventas_dia ?? 0} productos`}
                     badge="↗ 12.5%"
                     badgeType="success"
                     iconSvg={sales}
@@ -40,7 +40,7 @@ function Inicio(){
                 />
                 <StatCard 
                     title="Ganancia Diaria"
-                    value={loading ? "..." : `$${stats?.ganancia_diaria?.toFixed(2) ?? '0.00'}`}
+                    value={loading ? "..." : `S/${stats?.ganancia_diaria?.toFixed(2) ?? '0.00'}`}
                     badge="Ganancia Neta"
                     badgeType="info"
                     iconSvg={ganances}
