@@ -1,7 +1,7 @@
 import ver from "../../assets/icons/ventas/ver.svg"
 import trash from "../../assets/icons/productos/trash.svg"
 
-export const SalesTable = ({ sales }) => {
+export const SalesTable = ({ sales, onView }) => {
     const formatDate = (dateStr) => {
         if (!dateStr) return "-"
         const date = new Date(dateStr)
@@ -65,7 +65,7 @@ export const SalesTable = ({ sales }) => {
                             </td>
                             <td className="py-3 px-2">
                                 <div className="flex items-center justify-center gap-2">
-                                    <button className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors cursor-pointer" title="Ver">
+                                    <button onClick={() => onView?.(sale)} className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-600 transition-colors cursor-pointer" title="Ver">
                                         <img src={ver} alt="Ver" />
                                     </button>
                                     <button className="p-1.5 rounded-lg hover:bg-red-100 text-red-500 transition-colors cursor-pointer" title="Eliminar">
