@@ -174,7 +174,7 @@ export const AddSale = ({ onClose }) => {
                                         <div className="w-20">
                                             {i === 0 && <label className="mb-1 block text-xs font-medium text-gray-600">P.Unit</label>}
                                             <div className="w-full rounded-xl bg-gray-50 py-2.5 px-3 text-sm text-gray-600 border border-gray-200">
-                                                {row.precio ? `S/S/{row.precio.toFixed(2)}` : "-"}
+                                                {row.precio ? `S/${row.precio.toFixed(2)}` : "-"}
                                             </div>
                                         </div>
                                         <div className="w-20">
@@ -192,7 +192,7 @@ export const AddSale = ({ onClose }) => {
                                         <div className="w-24">
                                             {i === 0 && <label className="mb-1 block text-xs font-medium text-gray-600">Subtotal</label>}
                                             <div className="w-full rounded-xl bg-green-50 py-2.5 px-3 text-sm font-semibold text-green-800 border border-green-200">
-                                                {row.subtotal ? `S/S/{row.subtotal.toFixed(2)}` : "-"}
+                                                {row.subtotal ? `S/${row.subtotal.toFixed(2)}` : "-"}
                                             </div>
                                         </div>
                                         {productos.length > 1 && (
