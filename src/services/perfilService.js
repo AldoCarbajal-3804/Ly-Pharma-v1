@@ -17,6 +17,20 @@ export async function getProfile(token) {
     return data;
 }
 
+export async function updatePerfil(token,perfil) {
+    const res = await fetch(`${API_URL}/datos`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(perfil)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error al editar el perfil');
+    return data;
+}
+
 export async function unforgetPassword(username) {
     const res = await fetch(`${API_URL}/olvide-password`, {
         method: 'POST',
