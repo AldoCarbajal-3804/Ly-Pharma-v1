@@ -1,8 +1,10 @@
-import usuario from "../../data/usuario.json";
+import { useAuth } from "../../hooks/useAuth";
 import { ProfileCard } from "./ProfileCard";
 import { UserForm } from "./UserForm";
 
 function Configuracion() {
+    const { user } = useAuth();
+
     return (
         <main className="w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
             <div className="flex items-center justify-between">
@@ -12,9 +14,9 @@ function Configuracion() {
                 </div>
             </div>
 
-            <ProfileCard usuario={usuario} />
+            <ProfileCard usuario={user} />
 
-            <UserForm usuario={usuario} />
+            <UserForm user={user} />
         </main>
     );
 }
