@@ -58,6 +58,8 @@ function Products() {
         mutationFn: (id) => deleteProduct(user.token, id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["productos"] });
+            queryClient.invalidateQueries({ queryKey: ["muestra"] });
+            queryClient.invalidateQueries({ queryKey: ["alerts"] });
         },
     });
 

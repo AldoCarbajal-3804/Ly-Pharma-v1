@@ -78,6 +78,8 @@ export const AddProduct = ({ product, onClose }) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["productos"] });
+            queryClient.invalidateQueries({ queryKey: ["muestra"] });
+            queryClient.invalidateQueries({ queryKey: ["alerts"] });
             onClose();
         },
     });

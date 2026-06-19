@@ -36,6 +36,7 @@ export const AddSale = ({ onClose }) => {
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["ventas"] })
+            queryClient.invalidateQueries({ queryKey: ["muestra"] })
             onClose()
         },
     })
