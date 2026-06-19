@@ -58,8 +58,15 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const updateProfile = async () => {
+        if (!user?.token) return;
+        const profile = await getProfile(user.token);
+        localStorage.setItem('profile', JSON.stringify(profile));
+        setUser((prev) => ({ ...prev, ...profile }));
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, updateProfile }}>
             {children}
         </AuthContext.Provider>
     );
