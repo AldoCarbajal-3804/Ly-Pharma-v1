@@ -36,7 +36,7 @@ export async function addProduct(token, product) {
 }
 
 export async function editProduct(token, product, id) {
-    const res = await fetch(`${API_URL}${id}`, {
+    const res = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
