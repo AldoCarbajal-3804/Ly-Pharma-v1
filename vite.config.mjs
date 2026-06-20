@@ -6,6 +6,15 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(),tailwindcss()],
   base: './',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://ly-pharma-backend.vercel.app',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
   build: {
     outDir: 'dist',
   },
