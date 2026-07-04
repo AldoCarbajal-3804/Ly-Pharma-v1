@@ -7,9 +7,11 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(() => {
         const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
+        const id_sesion = localStorage.getItem('id_sesion');
         const profile = localStorage.getItem('profile');
         if (token && profile) {
-            return { token, ...JSON.parse(profile) };
+            return { token, role, id_sesion, ...JSON.parse(profile) };
         }
         return token ? { token } : null;
     });
@@ -41,9 +43,11 @@ export function AuthProvider({ children }) {
     const login = async (username, password) => {
         const data = await loginApi(username, password);
         localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('id_sesion', String(data.id_sesion ?? ''));
         const profile = await getProfile(data.token);
         localStorage.setItem('profile', JSON.stringify(profile));
-        setUser({ token: data.token, ...profile });
+        setUser({ token: data.token, role: data.role, id_sesion: data.id_sesion, ...profile });
     };
 
     const logout = async () => {
@@ -53,6 +57,8 @@ export function AuthProvider({ children }) {
             console.error('Error en logout:', e);
         } finally {
             localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('id_sesion');
             localStorage.removeItem('profile');
             setUser(null);
         }
