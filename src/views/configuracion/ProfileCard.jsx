@@ -23,7 +23,11 @@ export const ProfileCard = ({ usuario }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-5 border-t border-gray-100">
+            <div className="grid grid-cols-4 gap-4 mt-6 pt-5 border-t border-gray-100">
+                <div>
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Rol</p>
+                    <p className="text-sm font-medium text-gray-800 mt-0.5">{usuario.role || "—"}</p>
+                </div>
                 <div>
                     <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Teléfono</p>
                     <p className="text-sm font-medium text-gray-800 mt-0.5">{usuario.telefono}</p>
