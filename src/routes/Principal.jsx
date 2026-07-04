@@ -10,8 +10,12 @@ import exit from '../assets/icons/exit.svg'
 
 import { ButtonNavbar } from '../components/ButtonNavbar'
 import Inicio from '../views/inicio/Inicio'
-import Products from '../views/products/Products'
-import Sales from '../views/ventas/Sales'
+import AdminProducts from '../views/admin/Products'
+import AdminSales from '../views/admin/Sales'
+import AdminReportes from '../views/admin/Reportes'
+import EmpleadoProducts from '../views/empleado/Products'
+import EmpleadoSales from '../views/empleado/Sales'
+import EmpleadoReportes from '../views/empleado/Reportes'
 import Configuracion from '../views/configuracion/Configuracion'
 import {useNavigate} from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
@@ -111,15 +115,18 @@ function Principal() {
                         <span className="text-emerald-700 font-bold text-lg">
                             {user?.nombres} {user?.apellidos}
                         </span>
+                        <span className="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full capitalize">
+                            {user?.role || "usuario"}
+                        </span>
                     </section>
                 </header>
                 
                 <aside id="windows" className="p-8 overflow-y-auto bg-gray-50 flex-1">
                     {activeTab === "INICIO" && <Inicio />}
-                    {activeTab === "PRODUCTOS" && <Products />}
-                    {activeTab === "VENTAS" && <Sales />}
+                    {activeTab === "PRODUCTOS" && (user?.role === "Admin" ? <AdminProducts /> : <EmpleadoProducts />)}
+                    {activeTab === "VENTAS" && (user?.role === "Admin" ? <AdminSales /> : <EmpleadoSales />)}
+                    {activeTab === "REPORTES" && (user?.role === "Admin" ? <AdminReportes /> : <EmpleadoReportes />)}
                     {activeTab === "CONFIGURACIÓN" && <Configuracion />}
-                    {activeTab === "SALIR" && <Salir />}
                 </aside>
             </article>
 
