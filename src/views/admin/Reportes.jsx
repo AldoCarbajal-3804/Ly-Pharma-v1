@@ -1,7 +1,48 @@
+import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../hooks/useAuth"
+import { getGanancias, getRankingEmpleados, getPorcentajeProductos, getPorcentajeVentas } from "../../services/reportService"
+import { BarChartCard } from "../../components/charts/BarChartCard"
+import { PieChartCard } from "../../components/charts/PieChartCard"
+import { RankingCard } from "../../components/charts/RankingCard"
+
+const PERIODOS = ["dia", "semana", "mes", "anio"]
+const LABELS = { dia: "Día", semana: "Semana", mes: "Mes", anio: "Año" }
 
 function AdminReportes() {
     const { user } = useAuth()
+
+    const { data: gananciasByPeriodo = [] } = useQuery({
+        queryKey: ["reportes", "ganancias"],
+        queryFn: async () => {
+            const results = await Promise.all(
+                PERIODOS.map((p) => getGanancias(user.token, p))
+            )
+            return results.map((r, i) => ({
+                primary: LABELS[PERIODOS[i]],
+                secondary: r.total_ganancias,
+                ventas: r.total_ventas,
+            }))
+        },
+        enabled: !!user?.token,
+    })
+
+    const { data: ranking = [] } = useQuery({
+        queryKey: ["reportes", "ranking"],
+        queryFn: () => getRankingEmpleados(user.token, 10),
+        enabled: !!user?.token,
+    })
+
+    const { data: pctProductos } = useQuery({
+        queryKey: ["reportes", "pct-productos"],
+        queryFn: () => getPorcentajeProductos(user.token),
+        enabled: !!user?.token,
+    })
+
+    const { data: pctVentas } = useQuery({
+        queryKey: ["reportes", "pct-ventas"],
+        queryFn: () => getPorcentajeVentas(user.token),
+        enabled: !!user?.token,
+    })
 
     return (
         <main className="w-full space-y-6">
@@ -10,47 +51,35 @@ function AdminReportes() {
                 <p className="text-sm text-gray-500">Panel de reportes administrativos</p>
             </div>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia del Día</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia de la Semana</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia del Mes</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia del Año</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-            </section>
+            <BarChartCard title="Ganancias por Periodo" data={gananciasByPeriodo} />
+
+            <RankingCard title="Ranking de Empleados" data={ranking} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">Ranking de Empleados</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
-
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">Horarios de Empleados</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">% Productos por Proveedor, Categoría y Tipo</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
-
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">% Ventas por Proveedor, Categoría y Tipo</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
+                <PieChartCard
+                    title="% Productos por Proveedor"
+                    data={pctProductos?.por_proveedor ?? []}
+                />
+                <PieChartCard
+                    title="% Productos por Categoría"
+                    data={pctProductos?.por_categoria ?? []}
+                />
+                <PieChartCard
+                    title="% Productos por Tipo"
+                    data={pctProductos?.por_tipo ?? []}
+                />
+                <PieChartCard
+                    title="% Ventas por Proveedor"
+                    data={pctVentas?.por_proveedor ?? []}
+                />
+                <PieChartCard
+                    title="% Ventas por Categoría"
+                    data={pctVentas?.por_categoria ?? []}
+                />
+                <PieChartCard
+                    title="% Ventas por Tipo"
+                    data={pctVentas?.por_tipo ?? []}
+                />
             </div>
         </main>
     )

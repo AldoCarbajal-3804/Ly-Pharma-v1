@@ -1,7 +1,42 @@
+import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../hooks/useAuth"
+import { getGanancias, getProductosMasVendidos, getPorcentajeVentas } from "../../services/reportService"
+import { BarChartCard } from "../../components/charts/BarChartCard"
+import { PieChartCard } from "../../components/charts/PieChartCard"
+import { TopProductsCard } from "../../components/charts/TopProductsCard"
+
+const PERIODOS = ["dia", "semana", "mes"]
+const LABELS = { dia: "Día", semana: "Semana", mes: "Mes" }
 
 function EmpleadoReportes() {
     const { user } = useAuth()
+
+    const { data: gananciasByPeriodo = [] } = useQuery({
+        queryKey: ["reportes", "ganancias", "empleado"],
+        queryFn: async () => {
+            const results = await Promise.all(
+                PERIODOS.map((p) => getGanancias(user.token, p))
+            )
+            return results.map((r, i) => ({
+                primary: LABELS[PERIODOS[i]],
+                secondary: r.total_ganancias,
+                ventas: r.total_ventas,
+            }))
+        },
+        enabled: !!user?.token,
+    })
+
+    const { data: masVendidos = [] } = useQuery({
+        queryKey: ["reportes", "mas-vendidos"],
+        queryFn: () => getProductosMasVendidos(user.token, 10),
+        enabled: !!user?.token,
+    })
+
+    const { data: pctVentas } = useQuery({
+        queryKey: ["reportes", "pct-ventas", "empleado"],
+        queryFn: () => getPorcentajeVentas(user.token),
+        enabled: !!user?.token,
+    })
 
     return (
         <main className="w-full space-y-6">
@@ -10,31 +45,23 @@ function EmpleadoReportes() {
                 <p className="text-sm text-gray-500">Panel de reportes personales</p>
             </div>
 
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia del Día</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia de la Semana</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Ganancia del Mes</h3>
-                    <p className="text-2xl font-bold text-gray-800">S/ --</p>
-                </article>
-            </section>
+            <BarChartCard title="Ganancias Personales" data={gananciasByPeriodo} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">Productos más Vendidos</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
+            <TopProductsCard title="Productos más Vendidos" data={masVendidos} />
 
-                <article className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-bold text-gray-800 mb-4">% Categoría, Tipo y Proveedor</h3>
-                    <p className="text-sm text-gray-400">Próximamente...</p>
-                </article>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <PieChartCard
+                    title="% Ventas por Proveedor"
+                    data={pctVentas?.por_proveedor ?? []}
+                />
+                <PieChartCard
+                    title="% Ventas por Categoría"
+                    data={pctVentas?.por_categoria ?? []}
+                />
+                <PieChartCard
+                    title="% Ventas por Tipo"
+                    data={pctVentas?.por_tipo ?? []}
+                />
             </div>
         </main>
     )
