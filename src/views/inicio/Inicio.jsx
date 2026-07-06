@@ -19,7 +19,7 @@ function Inicio(){
             <div className="flex flex-wrap gap-6 mb-10">
                 <StatCard 
                     title="Ventas del Día"
-                    value={loading ? "..." : `${stats?.unidades_vendidas ?? stats?.total_ventas_dia ?? 0} productos`}
+                    value={loading ? "..." : `${stats?.total_productos_vendidos ?? 0} productos`}
                     badge="↗ 12.5%"
                     badgeType="success"
                     iconSvg={sales}
