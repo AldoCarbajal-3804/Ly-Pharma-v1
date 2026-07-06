@@ -19,7 +19,7 @@ export async function getVentas(token) {
 
 export async function getVentasId(token,id) {
     
-    const res = await fetch(`${API_URL}${id}`, {
+    const res = await fetch(`${API_URL}/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -45,5 +45,21 @@ export async function addVentas(token,venta) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Error al crear la venta');
     return data;
-    
+   
+}
+
+export async function listEmpleadoVentas(token, id) {
+
+    const res = await fetch(`${API_URL}?id_empleado=${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message || 'Error en el envio de token');
+    return data;
+
 }
