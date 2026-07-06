@@ -1,19 +1,34 @@
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useAuth } from "../../hooks/useAuth"
+import { getVentas, listEmpleadoVentas } from "../../services/ventaService"
 import { SalesTable } from "../ventas/SalesTable"
 import { Pagination } from "../ventas/Pagination"
 import { AddSale } from "../ventas/AddSale"
 import { Ticket } from "../../components/Ticket"
 import { ExcelTable } from "../../components/ExcelTable"
-import { useVentasCache } from "../../cache/useVentasCache"
 
 const ITEMS_PER_PAGE = 6
 
 function AdminSales() {
+    const { user } = useAuth()
     const [currentPage, setCurrentPage] = useState(1)
     const [showAddModal, setShowAddModal] = useState(false)
     const [selectedSale, setSelectedSale] = useState(null)
+    const [filterId, setFilterId] = useState("")
 
-    const { data: ventas = [] } = useVentasCache()
+    const queryKey = filterId ? ["ventas", "empleado", filterId] : ["ventas"]
+
+    const { data: ventas = [] } = useQuery({
+        queryKey,
+        queryFn: () => {
+            if (filterId) return listEmpleadoVentas(user.token, filterId).then(r => r.data ?? r ?? [])
+            return getVentas(user.token).then(r => r.data ?? r ?? [])
+        },
+        enabled: !!user?.token,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    })
 
     const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE)
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -51,11 +66,31 @@ function AdminSales() {
                 <header className="flex flex-col gap-4 border-b border-gray-100 p-5 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 className="text-lg font-bold text-gray-800">Historial de Ventas</h2>
-                        <p className="text-sm text-gray-500">Registro reciente de ventas realizadas</p>
+                        <p className="text-sm text-gray-500">
+                            {filterId ? `Ventas del empleado #${filterId}` : "Registro de todas las ventas"}
+                        </p>
                     </div>
 
-                    <nav aria-label="Acciones de ventas" className="flex flex-wrap gap-3">
-                        <ExcelTable data={exportData} columns={exportColumns} filename="Ventas">
+                    <nav aria-label="Acciones de ventas" className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2">
+                            <label className="text-xs font-medium text-gray-500">ID Empleado:</label>
+                            <input
+                                type="number"
+                                value={filterId}
+                                onChange={(e) => { setFilterId(e.target.value); setCurrentPage(1) }}
+                                placeholder="Filtrar"
+                                className="w-24 rounded-xl bg-gray-100 py-2 px-3 outline-none text-gray-800 text-sm focus:ring-2 focus:ring-green-800/20 focus:bg-white transition-all"
+                            />
+                            {filterId && (
+                                <button
+                                    onClick={() => { setFilterId(""); setCurrentPage(1) }}
+                                    className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1"
+                                >
+                                    Limpiar
+                                </button>
+                            )}
+                        </div>
+                        <ExcelTable data={exportData} columns={exportColumns} filename={`Ventas${filterId ? `_empleado_${filterId}` : ""}`}>
                             Exportar
                         </ExcelTable>
                     </nav>
