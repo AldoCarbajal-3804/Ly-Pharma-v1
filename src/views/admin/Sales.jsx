@@ -8,7 +8,7 @@ import { AddSale } from "../ventas/AddSale"
 import { Ticket } from "../../components/Ticket"
 import { ExcelTable } from "../../components/ExcelTable"
 
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 10
 
 function getEmployeeName(sale) {
     if (typeof sale.empleado === "object" && sale.empleado) {
@@ -24,23 +24,26 @@ function AdminSales() {
     const [selectedSale, setSelectedSale] = useState(null)
     const [filterName, setFilterName] = useState("")
 
-    const { data: rawVentas = [] } = useQuery({
-        queryKey: ["ventas", "all"],
-        queryFn: () => getVentas(user.token).then(r => r.data ?? r ?? []),
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    const { data: raw, isLoading } = useQuery({
+        queryKey: ["ventas", "all", offset, ITEMS_PER_PAGE],
+        queryFn: () => getVentas(user.token, { limit: ITEMS_PER_PAGE, offset }),
         enabled: !!user?.token,
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
     })
 
-    const ventas = useMemo(() => {
-        if (!filterName) return rawVentas
-        const term = filterName.toLowerCase()
-        return rawVentas.filter((sale) => getEmployeeName(sale).includes(term))
-    }, [rawVentas, filterName])
+    const ventas = raw?.data ?? []
+    const total = raw?.total ?? 0
 
-    const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE)
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const currentSales = ventas.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+    const filteredVentas = useMemo(() => {
+        if (!filterName) return ventas
+        const term = filterName.toLowerCase()
+        return ventas.filter((sale) => getEmployeeName(sale).includes(term))
+    }, [ventas, filterName])
+
+    const totalPages = Math.ceil((filterName ? filteredVentas.length : total) / ITEMS_PER_PAGE)
 
     const exportColumns = [
         { label: "Empleado", value: "empleado", width: 25 },
@@ -52,7 +55,7 @@ function AdminSales() {
         { label: "Total (S/)", value: "total", width: 15 },
     ]
 
-    const exportData = ventas.map((sale) => {
+    const exportData = filteredVentas.map((sale) => {
         const isObj = typeof sale.cliente === "object" && sale.cliente
         const fecha = sale.fecha ?? sale.date ?? sale.fecha_venta ?? ""
         const total = sale.total ?? sale.monto_total ?? 0
@@ -113,15 +116,19 @@ function AdminSales() {
                     </nav>
                 </header>
 
-                <AdminSalesTable sales={currentSales} onView={setSelectedSale} />
+                <AdminSalesTable sales={filteredVentas} onView={setSelectedSale} />
 
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalItems={ventas.length}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    onPageChange={setCurrentPage}
-                />
+                {isLoading ? (
+                    <div className="p-8 text-center text-sm text-gray-400">Cargando...</div>
+                ) : (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={filterName ? filteredVentas.length : total}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                        onPageChange={setCurrentPage}
+                    />
+                )}
             </section>
         </main>
     )

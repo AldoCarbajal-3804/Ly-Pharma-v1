@@ -8,7 +8,7 @@ import { AddSale } from "../ventas/AddSale"
 import { Ticket } from "../../components/Ticket"
 import { ExcelTable } from "../../components/ExcelTable"
 
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 10
 
 function EmpleadoSales() {
     const { user } = useAuth()
@@ -17,18 +17,19 @@ function EmpleadoSales() {
     const [selectedSale, setSelectedSale] = useState(null)
 
     const idEmpleado = user?.id_empleado
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
 
-    const { data: ventas = [] } = useQuery({
-        queryKey: ["ventas", "empleado", idEmpleado],
-        queryFn: () => listEmpleadoVentas(user.token, idEmpleado).then(r => r.data ?? r ?? []),
+    const { data: raw, isLoading } = useQuery({
+        queryKey: ["ventas", "empleado", idEmpleado, offset, ITEMS_PER_PAGE],
+        queryFn: () => listEmpleadoVentas(user.token, idEmpleado, { limit: ITEMS_PER_PAGE, offset }),
         enabled: !!user?.token && !!idEmpleado,
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
     })
 
-    const totalPages = Math.ceil(ventas.length / ITEMS_PER_PAGE)
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const currentSales = ventas.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+    const ventas = raw?.data ?? []
+    const total = raw?.total ?? 0
+    const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
 
     const exportColumns = [
         { label: "N° Venta", value: "id", width: 12 },
@@ -78,15 +79,19 @@ function EmpleadoSales() {
                     </nav>
                 </header>
 
-                <SalesTable sales={currentSales} onView={setSelectedSale} />
+                <SalesTable sales={ventas} onView={setSelectedSale} />
 
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalItems={ventas.length}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    onPageChange={setCurrentPage}
-                />
+                {isLoading ? (
+                    <div className="p-8 text-center text-sm text-gray-400">Cargando...</div>
+                ) : (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={total}
+                        itemsPerPage={ITEMS_PER_PAGE}
+                        onPageChange={setCurrentPage}
+                    />
+                )}
             </section>
         </main>
     )

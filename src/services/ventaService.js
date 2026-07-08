@@ -1,9 +1,14 @@
 import { URL } from "../variables";
 const API_URL = `${URL}/ventas`;
 
-export async function getVentas(token) {
-    
-    const res = await fetch(API_URL, {
+function queryString(params = {}) {
+    const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "");
+    if (!entries.length) return "";
+    return "?" + new URLSearchParams(entries).toString();
+}
+
+export async function getVentas(token, { limit, offset } = {}) {
+    const res = await fetch(`${API_URL}${queryString({ limit, offset })}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -14,11 +19,9 @@ export async function getVentas(token) {
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || 'Error en el envio de token');
     return data;
-
 }
 
-export async function getVentasId(token,id) {
-    
+export async function getVentasId(token, id) {
     const res = await fetch(`${API_URL}/${id}`, {
         method: 'GET',
         headers: {
@@ -32,8 +35,7 @@ export async function getVentasId(token,id) {
     return data;
 }
 
-export async function addVentas(token,venta) {
-
+export async function addVentas(token, venta) {
     const res = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -45,12 +47,10 @@ export async function addVentas(token,venta) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Error al crear la venta');
     return data;
-   
 }
 
-export async function listEmpleadoVentas(token, id) {
-
-    const res = await fetch(`${API_URL}?id_empleado=${id}`, {
+export async function listEmpleadoVentas(token, id, { limit, offset } = {}) {
+    const res = await fetch(`${API_URL}${queryString({ id_empleado: id, limit, offset })}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -61,5 +61,4 @@ export async function listEmpleadoVentas(token, id) {
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || 'Error en el envio de token');
     return data;
-
 }

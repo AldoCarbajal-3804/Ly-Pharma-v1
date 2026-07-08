@@ -1,30 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../hooks/useAuth"
-import { getGanancias, getRankingEmpleados, getPorcentajeProductos, getPorcentajeVentas } from "../../services/reportService"
-import { BarChartCard } from "../../components/charts/BarChartCard"
+import { getRankingEmpleados, getPorcentajeProductos, getPorcentajeVentas } from "../../services/reportService"
+import { GananciasCard } from "../../components/charts/GananciasCard"
 import { PieChartCard } from "../../components/charts/PieChartCard"
 import { RankingCard } from "../../components/charts/RankingCard"
 
-const PERIODOS = ["dia", "semana", "mes", "anio"]
-const LABELS = { dia: "Día", semana: "Semana", mes: "Mes", anio: "Año" }
-
 function AdminReportes() {
     const { user } = useAuth()
-
-    const { data: gananciasByPeriodo = [] } = useQuery({
-        queryKey: ["reportes", "ganancias"],
-        queryFn: async () => {
-            const results = await Promise.all(
-                PERIODOS.map((p) => getGanancias(user.token, p))
-            )
-            return results.map((r, i) => ({
-                primary: LABELS[PERIODOS[i]],
-                secondary: r.total_ganancias,
-                ventas: r.total_ventas,
-            }))
-        },
-        enabled: !!user?.token,
-    })
 
     const { data: ranking = [] } = useQuery({
         queryKey: ["reportes", "ranking"],
@@ -51,7 +33,7 @@ function AdminReportes() {
                 <p className="text-sm text-gray-500">Panel de reportes administrativos</p>
             </div>
 
-            <BarChartCard title="Ganancias por Periodo" data={gananciasByPeriodo} />
+            <GananciasCard title="Ganancias" showAnio />
 
             <RankingCard title="Ranking de Empleados" data={ranking} />
 

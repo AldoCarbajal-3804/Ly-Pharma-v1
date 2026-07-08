@@ -1,8 +1,14 @@
 import { URL } from "../variables";
 const BASE = `${URL}/reportes`;
 
-export async function getGanancias(token, periodo = "dia") {
-    const res = await fetch(`${BASE}/ganancias?periodo=${periodo}`, {
+function queryString(params = {}) {
+    const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "");
+    if (!entries.length) return "";
+    return "?" + new URLSearchParams(entries).toString();
+}
+
+export async function getGanancias(token, periodo = "dia", idEmpleado) {
+    const res = await fetch(`${BASE}/ganancias/${periodo}${queryString({ id_empleado: idEmpleado })}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -27,8 +33,8 @@ export async function getRankingEmpleados(token, limite = 10) {
     return data;
 }
 
-export async function getProductosMasVendidos(token, limite = 10) {
-    const res = await fetch(`${BASE}/productos-mas-vendidos?limite=${limite}`, {
+export async function getProductosMasVendidos(token, limite = 10, idEmpleado) {
+    const res = await fetch(`${BASE}/productos-mas-vendidos${queryString({ limite, id_empleado: idEmpleado })}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -53,8 +59,8 @@ export async function getPorcentajeProductos(token) {
     return data;
 }
 
-export async function getPorcentajeVentas(token) {
-    const res = await fetch(`${BASE}/porcentaje-ventas`, {
+export async function getPorcentajeVentas(token, idEmpleado) {
+    const res = await fetch(`${BASE}/porcentaje-ventas${queryString({ id_empleado: idEmpleado })}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

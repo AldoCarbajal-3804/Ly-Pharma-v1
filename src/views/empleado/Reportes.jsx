@@ -1,40 +1,23 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../hooks/useAuth"
-import { getGanancias, getProductosMasVendidos, getPorcentajeVentas } from "../../services/reportService"
-import { BarChartCard } from "../../components/charts/BarChartCard"
+import { getProductosMasVendidos, getPorcentajeVentas } from "../../services/reportService"
+import { GananciasCard } from "../../components/charts/GananciasCard"
 import { PieChartCard } from "../../components/charts/PieChartCard"
 import { TopProductsCard } from "../../components/charts/TopProductsCard"
 
-const PERIODOS = ["dia", "semana", "mes"]
-const LABELS = { dia: "Día", semana: "Semana", mes: "Mes" }
-
 function EmpleadoReportes() {
     const { user } = useAuth()
-
-    const { data: gananciasByPeriodo = [] } = useQuery({
-        queryKey: ["reportes", "ganancias", "empleado"],
-        queryFn: async () => {
-            const results = await Promise.all(
-                PERIODOS.map((p) => getGanancias(user.token, p))
-            )
-            return results.map((r, i) => ({
-                primary: LABELS[PERIODOS[i]],
-                secondary: r.total_ganancias,
-                ventas: r.total_ventas,
-            }))
-        },
-        enabled: !!user?.token,
-    })
+    const idEmpleado = user?.id_empleado
 
     const { data: masVendidos = [] } = useQuery({
-        queryKey: ["reportes", "mas-vendidos"],
-        queryFn: () => getProductosMasVendidos(user.token, 10),
+        queryKey: ["reportes", "mas-vendidos", idEmpleado],
+        queryFn: () => getProductosMasVendidos(user.token, 10, idEmpleado),
         enabled: !!user?.token,
     })
 
     const { data: pctVentas } = useQuery({
-        queryKey: ["reportes", "pct-ventas", "empleado"],
-        queryFn: () => getPorcentajeVentas(user.token),
+        queryKey: ["reportes", "pct-ventas", "empleado", idEmpleado],
+        queryFn: () => getPorcentajeVentas(user.token, idEmpleado),
         enabled: !!user?.token,
     })
 
@@ -45,7 +28,7 @@ function EmpleadoReportes() {
                 <p className="text-sm text-gray-500">Panel de reportes personales</p>
             </div>
 
-            <BarChartCard title="Ganancias Personales" data={gananciasByPeriodo} />
+            <GananciasCard title="Ganancias Personales" showAnio={false} idEmpleado={idEmpleado} />
 
             <TopProductsCard title="Productos más Vendidos" data={masVendidos} />
 
