@@ -33,8 +33,8 @@ export const ProductTable = ({ products, onEdit, onDelete }) => {
                         <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Categoría</th>
                         <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
                         <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Stock</th>
-                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Vencimiento</th>
                         <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Proveedores</th>
+                        <th className="text-center py-3 px-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Vencimiento</th>
                     </tr>
                 </thead>
                 <tbody>
